@@ -54,7 +54,8 @@ def resample_f(x, y, sample_ratio, interp_win, interp_delta, num_table):
     # delta win
     eta = index_frac - offset
     weight = np.take(interp_delta_padded, filter_take_idx, mode='clip')
-    y += np.einsum('ij,j,ijk->jk', weight, eta, x_padded_unfold, casting='unsafe')
+    print(weight.dtype, eta.dtype, x_padded_unfold.dtype)
+    np.add(y, np.einsum('ij,j,ijk->jk', weight, eta, x_padded_unfold, casting='unsafe'), out=y, casting='unsafe')
 
     # Invert P
     frac = scale - frac
@@ -75,13 +76,14 @@ def resample_f(x, y, sample_ratio, interp_win, interp_delta, num_table):
     x_take_idx = n + 1 + np.arange(k_max)[:, None]
     x_padded_unfold = np.take(x_padded, x_take_idx, axis=0)
 
-    y += np.einsum('ij,ijk->jk', weight, x_padded_unfold, casting='unsafe')
+    np.add(y, np.einsum('ij,ijk->jk', weight, x_padded_unfold, casting='unsafe'), out=y, casting='unsafe')
 
     # delta win
     # Interpolation factor
     eta = index_frac - offset
     weight = np.take(interp_delta_padded, filter_take_idx, mode='clip')
-    y += np.einsum('ij,j,ijk->jk', weight, eta, x_padded_unfold, casting='unsafe')
+    np.add(y, np.einsum('ij,j,ijk->jk', weight, eta, x_padded_unfold, casting='unsafe'), out=y, casting='unsafe')
+
 
 
 if __name__ == '__main__':
