@@ -4,7 +4,7 @@
 import numpy as np
 import pytest
 
-import resampy
+import resamcupy
 
 
 def make_tone(freq, sr, duration):
@@ -28,7 +28,7 @@ def test_quality_sine(sr_orig, sr_new, fil, rms):
 
     x = make_tone(FREQ, sr_orig, DURATION)
     y = make_tone(FREQ, sr_new, DURATION)
-    y_pred = resampy.resample(x, sr_orig, sr_new, filter=fil)
+    y_pred = resamcupy.resample(x, sr_orig, sr_new, filter=fil)
 
     idx = slice(sr_new // 2, - sr_new//2)
 
@@ -47,7 +47,7 @@ def test_quality_sweep(sr_orig, sr_new, fil, rms):
     x = make_sweep(FREQ, sr_orig, DURATION)
     y = make_sweep(FREQ, sr_new, DURATION)
 
-    y_pred = resampy.resample(x, sr_orig, sr_new, filter=fil)
+    y_pred = resamcupy.resample(x, sr_orig, sr_new, filter=fil)
 
     idx = slice(sr_new // 2, - sr_new//2)
 

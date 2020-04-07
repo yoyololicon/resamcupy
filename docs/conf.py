@@ -64,7 +64,7 @@ sys.modules.update((mod_name, mock.Mock()) for mod_name in MOCK_MODULES)
 # built documents.
 #
 import imp
-resampy_version = imp.load_source('resampy.version', '../resampy/version.py')
+resampy_version = imp.load_source('resampy.version', '../resamcupy/version.py')
 
 # The short X.Y version.
 version = resampy_version.short_version

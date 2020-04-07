@@ -1,23 +1,23 @@
-'''resampy install script'''
+'''resamcupy install script'''
 import imp
 
 from setuptools import setup
 
 
-VERSION = imp.load_source('resampy.version', 'resampy/version.py')
+VERSION = imp.load_source('resamcupy.version', 'resamcupy/version.py')
 
 
 setup(
     author="Brian McFee",
     author_email="brian.mcfee@nyu.edu",
-    name='resampy',
+    name='resamcupy',
     version=VERSION.version,
-    url='https://github.com/bmcfee/resampy',
-    download_url='https://github.com/bmcfee/resampy/releases',
+    url='https://github.com/bmcfee/resamcupy',
+    download_url='https://github.com/bmcfee/resamcupy/releases',
     description='Efficient signal resampling',
     license='ISC',
-    packages=['resampy'],
-    package_data={'resampy': ['data/*']},
+    packages=['resamcupy'],
+    package_data={'resamcupy': ['data/*']},
     install_requires=[
         'numpy>=1.10',
         'scipy>=0.13',
