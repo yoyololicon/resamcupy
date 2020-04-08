@@ -3,6 +3,7 @@
 '''Core resampling interface'''
 
 import numpy as np
+import cupy as cp
 
 from .filters import get_filter
 
@@ -104,19 +105,22 @@ def resample(x, sr_orig, sr_new, axis=-1, filter='kaiser_best', **kwargs):
     else:
         order = 'C'
 
-    y = np.zeros(shape, dtype=x.dtype, order=order)
+    xp = cp.get_array_module(x)
+
+    y = xp.zeros(shape, dtype=x.dtype, order=order)
 
     interp_win, precision, _ = get_filter(filter, **kwargs)
+    interp_win = xp.asarray(interp_win)
 
     if sample_ratio < 1:
         interp_win *= sample_ratio
 
-    interp_delta = np.zeros_like(interp_win)
-    interp_delta[:-1] = np.diff(interp_win)
+    interp_delta = xp.zeros_like(interp_win)
+    interp_delta[:-1] = xp.diff(interp_win)
 
     # Construct 2d views of the data with the resampling axis on the first dimension
-    x_2d = x.swapaxes(0, axis).reshape((x.shape[axis], -1))
-    y_2d = y.swapaxes(0, axis).reshape((y.shape[axis], -1))
-    resample_f(x_2d, y_2d, sample_ratio, interp_win, interp_delta, precision)
+    x_2d = x.swapaxes(0, axis)
+    y_2d = y.swapaxes(0, axis)#.reshape((y.shape[axis], -1))
+    resample_f(x_2d, y_2d, sample_ratio, interp_win, interp_delta, int(precision))
 
     return y

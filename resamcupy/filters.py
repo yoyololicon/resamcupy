@@ -28,6 +28,7 @@ where ``**kwargs`` are additional parameters to `resampy.filters.sinc_window`_.
 
 import scipy.signal
 import numpy as np
+import cupy as cp
 import os
 import pkg_resources
 import six
@@ -108,7 +109,7 @@ def sinc_window(num_zeros=64, precision=9, window=None, rolloff=0.945):
         raise ValueError('Invalid precision: precision={}'.format(precision))
 
     # Generate the right-wing of the sinc
-    num_bits = 2**precision
+    num_bits = 2 ** precision
     n = num_bits * num_zeros
     sinc_win = rolloff * np.sinc(rolloff * np.linspace(0, num_zeros, num=n + 1,
                                                        endpoint=True))
