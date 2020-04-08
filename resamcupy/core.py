@@ -119,8 +119,8 @@ def resample(x, sr_orig, sr_new, axis=-1, filter='kaiser_best', **kwargs):
     interp_delta[:-1] = xp.diff(interp_win)
 
     # Construct 2d views of the data with the resampling axis on the first dimension
-    x_2d = x.swapaxes(0, axis)
-    y_2d = y.swapaxes(0, axis)#.reshape((y.shape[axis], -1))
+    x_2d = x.swapaxes(0, axis).reshape((x.shape[axis], -1))
+    y_2d = y.swapaxes(0, axis).reshape((y.shape[axis], -1))
     resample_f(x_2d, y_2d, sample_ratio, interp_win, interp_delta, int(precision))
 
     return y
