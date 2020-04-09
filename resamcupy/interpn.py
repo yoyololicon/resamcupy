@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''Numba implementation of resampler'''
-import cupy as cp
+
 from numba import cuda
 
 

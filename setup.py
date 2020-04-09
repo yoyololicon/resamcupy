@@ -3,18 +3,16 @@ import imp
 
 from setuptools import setup
 
-
 VERSION = imp.load_source('resamcupy.version', 'resamcupy/version.py')
-
 
 setup(
     author="Brian McFee",
     author_email="brian.mcfee@nyu.edu",
     name='resamcupy',
     version=VERSION.version,
-    url='https://github.com/bmcfee/resamcupy',
-    download_url='https://github.com/bmcfee/resamcupy/releases',
-    description='Efficient signal resampling',
+    url='https://github.com/yoyololicon/resamcupy',
+    download_url='https://github.com/yoyololicon/resamcupy/releases',
+    description='Efficient signal resampling wtih cuda',
     license='ISC',
     packages=['resamcupy'],
     package_data={'resamcupy': ['data/*']},
@@ -22,7 +20,8 @@ setup(
         'numpy>=1.10',
         'scipy>=0.13',
         'numba>=0.32',
-        'six>=1.3'],
+        'six>=1.3',
+        'cupy>=6.5'],
     extras_require={
         'docs': [
             'sphinx!=1.3.1',  # autodoc was broken in 1.3.1
