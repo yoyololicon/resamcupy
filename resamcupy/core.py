@@ -9,7 +9,9 @@ from .filters import get_filter
 
 from .interpn import resample_f
 
-__all__ = ['resample']
+from .sinc_base import resample_f as resample_new
+
+__all__ = ['resample', 'resample_sinc']
 
 
 def resample(x, sr_orig, sr_new, axis=-1, filter='kaiser_best', **kwargs):
@@ -121,6 +123,43 @@ def resample(x, sr_orig, sr_new, axis=-1, filter='kaiser_best', **kwargs):
     # Construct 2d views of the data with the resampling axis on the first dimension
     x_2d = x.swapaxes(0, axis).reshape((x.shape[axis], -1))
     y_2d = y.swapaxes(0, axis).reshape((y.shape[axis], -1))
+
     resample_f(x_2d, y_2d, sample_ratio, interp_win, interp_delta, int(precision))
+
+    return y
+
+
+def resample_sinc(x, sr_orig, sr_new, axis=-1, num_zeros=64, rolloff=0.945):
+    if sr_orig <= 0:
+        raise ValueError('Invalid sample rate: sr_orig={}'.format(sr_orig))
+
+    if sr_new <= 0:
+        raise ValueError('Invalid sample rate: sr_new={}'.format(sr_new))
+
+    sample_ratio = float(sr_new) / sr_orig
+
+    # Set up the output shape
+    shape = list(x.shape)
+    shape[axis] = int(shape[axis] * sample_ratio)
+
+    if shape[axis] < 1:
+        raise ValueError('Input signal length={} is too small to '
+                         'resample from {}->{}'.format(x.shape[axis], sr_orig, sr_new))
+
+    # Preserve contiguity of input (if it exists)
+    # If not, revert to C-contiguity by default
+    if x.flags['F_CONTIGUOUS']:
+        order = 'F'
+    else:
+        order = 'C'
+
+    xp = cp.get_array_module(x)
+
+    y = xp.zeros(shape, dtype=x.dtype, order=order)
+
+    x_2d = x.swapaxes(0, axis).reshape((x.shape[axis], -1))
+    y_2d = y.swapaxes(0, axis).reshape((y.shape[axis], -1))
+
+    resample_new(x_2d, y_2d, sample_ratio, num_zeros, rolloff)
 
     return y
